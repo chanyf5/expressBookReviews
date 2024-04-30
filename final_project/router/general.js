@@ -14,13 +14,16 @@ public_users.post("/register", (req,res) => {
 public_users.get('/',function (req, res) {
   //Write your code here
   res.send(JSON.stringify(books));
-  return res.status(300).json({message: "Yet to be implemented"});
+  
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  let isbn = req.params.isbn;
+  let allBook = Object.values(books);
+  let isbnBook = allBook.find(book=>book.isbn === isbn);
+  res.send(JSON.stringify(isbnBook));
  });
   
 // Get book details based on author
