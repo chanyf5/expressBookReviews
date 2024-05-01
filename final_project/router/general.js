@@ -9,9 +9,9 @@ public_users.post("/register", (req,res) => {
   //Write your code here
   const username = req.body.username;
   const password = req.body.password;
-  const alreadyExit = (username)=>{
+  const alreadyExist = (username)=>{
     let userWithName = users.filter((user)=>{
-        return user.username ===username
+        return user.username === username
     });
     if(userWithName.length >0){
         return true;
@@ -21,8 +21,8 @@ public_users.post("/register", (req,res) => {
   }
   
   
-  if (username && password0) {
-    if (!alreadyExit(username)) {
+  if (username && password) {
+    if (!alreadyExist(username)) {
         users.push({"username":username, "password":password});
         return res.status(200).json({message: "User successfully registered."});
     } else {
