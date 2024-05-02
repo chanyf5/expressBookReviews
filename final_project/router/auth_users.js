@@ -58,15 +58,13 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
   const isbn = req.params.isbn;
   const review = req.query.review;
-  const username = req.session.authorization.username;
+  const username = req.session.authorization["username"];
   
-  if(books[isbn]) {
-    let book = books[isbn];
-    book.reviews[username]=review;
+  
+    
+    books[isbn].reviews = review;
     return res.status(200).send("review added.");
-  } else {
-    return res.status(404).send("Book not found.");
-  }  
+  
 });
 
 module.exports.authenticated = regd_users;
