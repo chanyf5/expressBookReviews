@@ -3,11 +3,7 @@ const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
-let users = [
-    { "username": "user1",
-       "password": "pw1001"
-    },
-];
+let users = [];
 
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
@@ -62,20 +58,15 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
   const isbn = req.params.isbn;
   const review = req.query.review;
-  const token = req.headers.wuthorization.split(" ")[1];
-  const decoded = jwt.verify(token,jwtSecret);
-  const username = decoded.username;
-
-  if (books[isbn]) {
-    if (!books[isbn].reviews) {
-        books[isbn].reviews = [];
-    }
-    books[isbn].reviews[username]=review;
-    res.status(200).json({message: "Review added."});
-  } else {
-    res.status(404).json({message: "Book not found"});
-  }
+  const username = req.session.authorization.username;
   
+  if(books[isbn]) {
+    let book = books[isbn];
+    book.reviews[username]=review;
+    return res.status(200).send("review added.");
+  } else {
+    return res.status(404).send("Book not found.");
+  }  
 });
 
 module.exports.authenticated = regd_users;
