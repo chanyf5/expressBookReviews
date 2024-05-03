@@ -22,7 +22,11 @@ const authenticatedUser = (username,password)=>{ //returns boolean
     const validUser = users.find(
         (user)=>user.username === username && user.password === password
     );
-    return validUser;
+    if (validUser.length>0) {
+        return true;
+    } else {
+        return false;
+    }
 };
 
 //only registered users can login
@@ -59,12 +63,26 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   const review = req.query.review;
   const username = req.session.authorization["username"];
-  
-  
-    
-    books[isbn].reviews = review;
-    return res.status(200).send("review added.");
-  
+  let bookDetails = Object.values(books);
+  let reviewBook = bookDetails.find (b=>b.isbn === isbn);
+  if (reviewBook) {
+    reviewBook.reviews["username"]=review;
+    res.send("Reviews updated.");
+  } else {
+    res.send("Book not found.");    
+  }  
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.username;
+    if (books[isbn]) {
+        let book = books[isbn];
+        delete book.reviews[username];
+        return res.status(200).send("Reviews successfully deleted");
+    } else {
+        return res.status(404).send("Book not found.");
+    }
 });
 
 module.exports.authenticated = regd_users;
