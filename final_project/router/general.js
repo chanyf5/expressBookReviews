@@ -39,7 +39,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
   let author = req.params.author;
-  bookDetails = Object.values(books);
+  let bookDetails = Object.values(books);
   let authorBook = bookDetails.find(b=>b.author===author);
   res.send(JSON.stringify(authorBook));
   
@@ -65,5 +65,73 @@ public_users.get('/review/:isbn',function (req, res) {
   res.send(review);
   
 });
+
+//Task 10
+function getBooks() {
+    return new Promise((resolve,reject)=>{
+        resolve(books);
+    })
+}
+
+public_users.get('/', function(req,res){
+    getBooks().then(
+        (book)=>res.send(JSON.stringify(book, null, 4)),
+        (error)=>res.send("Error")
+    );
+});
+
+//Task 11
+function getBooksbyISBN(isbn){
+    let book = books[isbn];
+    return new Promise((resolve,reject)=>{
+        if(book) {
+            resolve(book);
+        } else {
+            reject("No book found.");
+        }
+    })
+}
+
+public_users.get('/isbn/:isbn', function (req, res) {
+    const isbn = req.params.isbn;
+    getBooksbyISBN(isbn).then(
+        (book)=>res.send(JSON.stringify(book, null, 4)),
+        (error)=>res.send("Book not found.")
+    );
+});
+
+//Task 12
+function getBooksbyAuthor(author) {
+    return new Promise((resolve,reject)=>{
+        let bookDetails = Object.values(books);
+        let authorBook = bookDetails.find(b=>b.author===author);
+        resolve(authorBook);
+    })
+}
+
+public_users.get('/author/:author', function(req,res) {
+    const author = req.params.author;
+    getBooksbyAuthor(author).then(
+        (book)=>res.send(JSON.stringify(book, null, 4))
+    );
+});
+
+//Task 13
+function getBookbyTitle(title) {
+    return new Promise((resolve,reject)=>{
+        let bookDetails = Object.values(books);
+        let titleBook = bookDetails.find(b=>b.title===title);
+        resolve(titleBook);
+    }
+}
+    
+public_users.get('/title/:title', function(req, res) {
+    const title = req.params.title;
+    getBookbyTitle(title).then(
+        (titleBook)=>res.send(JSON.stringify(titleBook, null, 4));
+    )
+});
+
+
 
 module.exports.general = public_users;
